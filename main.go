@@ -5,7 +5,7 @@ import (
 	"github.com/restartfu/dyn/internal/logger"
 )
 
-var version = logger.Color("<aqua>v0.1.1</aqua>")
+var version = logger.Color("<aqua>v0.1.2</aqua>")
 
 func main() {
 	cli.Execute(version)
