@@ -86,6 +86,8 @@ func executePackage(pkg string, act string) {
 	cmd.Stdout = logger.InfoOut
 	cmd.Stderr = os.Stderr
 	cmd.Run()
+
+	os.RemoveAll(tmpDir)
 }
 
 func verb(s string) string {
