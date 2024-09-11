@@ -1,46 +1,88 @@
-# dyn
-a linux package manager 
+# Dyn: The Dynamic Linux Package Manager
 
-## installing from source (requires Go installed):
+Welcome to Dyn, a modern, user-friendly package manager for Linux that's designed to make your life easier. Whether you're a seasoned sysadmin or a curious beginner, Dyn streamlines your package management experience with simplicity and efficiency.
+
+## Installation
+
+### Prerequisites
+- Ensure you have **Go** installed on your system.
+
+### From Source
 ```sh
-  git clone --depth=1 https://github.com/RestartFU/dyn
-  cd dyn
-  sudo make install
+git clone --depth=1 https://github.com/RestartFU/dyn
+cd dyn
+sudo make install
 ```
 
-# installing a package:
+## Quick Start
+
+### Install a Package
 ```sh
-dyn install <pkg>
+dyn install <package_name>
 ```
-## example:
+**Example:**
 ```sh
 dyn install discord
 ```
 
-# removing a package:
+### Remove a Package
 ```sh
-dyn remove <pkg>
+dyn remove <package_name>
 ```
-## example:
+**Example:**
 ```sh
 dyn remove discord
 ```
 
-# updating a package:
+### Update a Package
 ```sh
-dyn update <pkg>
+dyn update <package_name>
 ```
-## example:
+**Example:**
 ```sh
 dyn update discord
 ```
 
-# fetching the dyn-pkg repository:
+### Fetch Dyn's Package Repository
 ```sh
 dyn fetch
 ```
 
-## you may also fetch and install at the same time:
+### Fetch and Install in One Go
+For convenience, you can fetch and install a package simultaneously:
 ```sh
 dyn fetch install discord
 ```
+
+## Why Choose Dyn?
+
+- **Speed**: Cloned with `--depth=1` for faster setup.
+- **Simplicity**: Straightforward commands for all your package needs.
+- **Efficiency**: Updates, installs, and removes packages with minimal fuss.
+
+## Advanced Usage (TODO)
+
+Dyn supports a variety of options for more complex operations. Here's a quick overview:
+
+- **List Installed Packages**:
+  ```sh
+  dyn list
+  ```
+
+- **Search for Packages**:
+  ```sh
+  dyn search <keyword>
+  ```
+
+- **Show Package Information**:
+  ```sh
+  dyn info <package_name>
+  ```
+
+## Contributing
+
+We welcome contributions! If you have ideas or find bugs, please:
+
+1. Fork the repository.
+2. Make your changes.
+3. Submit a pull request.
