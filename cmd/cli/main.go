@@ -49,6 +49,11 @@ func Execute() {
 		pkg = "dyn"
 	}
 
+	executePackage(pkg, act)
+	logger.Dynf("done %s package %s.\n", verb(act), pkg)
+}
+
+func executePackage(pkg string, act string) {
 	targetPkgPath := filepath.Join(pkgPath, pkg)
 	if _, err := os.Stat(targetPkgPath); os.IsNotExist(err) {
 		logger.Fatalf("no package found with the name %s, maybe run '%s fetch', and try again?\n", pkg, executable)
@@ -74,8 +79,6 @@ func Execute() {
 	cmd.Stdout = logger.InfoOut
 	cmd.Stderr = os.Stderr
 	cmd.Run()
-
-	logger.Dynf("done %s package %s.\n", verb(act), pkg)
 }
 
 func verb(s string) string {
