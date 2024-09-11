@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,16 +11,22 @@ import (
 )
 
 var (
-	pkgPath = "/usr/local/dyn-pkg"
+	pkgPath    = "/usr/local/dyn-pkg"
+	executable string
 )
 
-func Execute() {
+func Execute(version string) {
 	exe, err := os.Executable()
 	if err != nil {
 		logger.Fatalf("somehow we cannot know where the executable is being run from: %s.\n", err)
 	}
 
-	executable := filepath.Base(exe)
+	if arg, ok := arg(1); ok && arg == "version" {
+		fmt.Println(version)
+		return
+	}
+
+	executable = filepath.Base(exe)
 	_, su := os.LookupEnv("SUDO_COMMAND")
 	if !su {
 		logger.Fatalf("%s must be run as a super user.\n", executable)

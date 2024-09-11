@@ -45,6 +45,10 @@ func printf(prefix string, str string, args ...any) {
 	fmt.Print(text.ANSI(text.Colourf(prefix+"<grey>|</grey> ")) + fmt.Sprintf(str, args...))
 }
 
+func Color(str string) string {
+	return text.ANSI(text.Colourf(str))
+}
+
 func print(prefix string, str string) {
 	fmt.Print(text.ANSI(text.Colourf(prefix+"<grey>|</grey> ")) + str)
 }
