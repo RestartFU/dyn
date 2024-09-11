@@ -23,6 +23,11 @@ chmod +x dyn
 sudo mv dyn /usr/bin/dyn
 ```
 
+## Updating dyn
+```sh
+dyn fetch update
+```
+
 ## Quick Start
 
 ### Install a Package
