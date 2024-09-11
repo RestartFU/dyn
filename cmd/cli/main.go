@@ -12,26 +12,21 @@ import (
 	"github.com/savioxavier/termlink"
 )
 
-var (
-	pkgPath    = "/usr/local/dyn-pkg"
-	executable string
-)
+type CLI struct {
+	Version   string
+	ForceSudo bool
+	PkgDir    string
+}
 
-func Execute(version string) {
-	exe, err := os.Executable()
-	if err != nil {
-		logger.Fatalf("somehow we cannot know where the executable is being run from: %s.\n", err)
-	}
-
+func (c CLI) Execute() {
 	if arg, ok := arg(1); ok && arg == "version" {
-		fmt.Println(version)
+		fmt.Println(c.Version)
 		return
 	}
 
-	executable = filepath.Base(exe)
 	_, su := os.LookupEnv("SUDO_COMMAND")
-	if !su {
-		logger.Fatalf("%s must be run as a super user.\n", executable)
+	if !su && c.ForceSudo {
+		logger.Fatalf("dyn must be run as a super user.\n")
 	}
 
 	act, ok := arg(1)
@@ -41,7 +36,7 @@ func Execute(version string) {
 
 	pkgArgN := 2
 	if act == "fetch" {
-		fetch()
+		c.fetch()
 		act, ok = arg(pkgArgN)
 		if !ok || !isAnyString(act, "update", "install", "remove") {
 			return
@@ -58,19 +53,19 @@ func Execute(version string) {
 		pkg = "dyn"
 	}
 
-	executePackage(pkg, act)
+	c.executePackage(pkg, act)
 	logger.Dynf("done %s package %s.\n", verb(act), pkg)
 }
 
-func executePackage(pkg string, act string) {
-	targetPkgPath := filepath.Join(pkgPath, pkg)
+func (c CLI) executePackage(pkg string, act string) {
+	targetPkgPath := filepath.Join(c.PkgDir, pkg)
 	if _, err := os.Stat(targetPkgPath); os.IsNotExist(err) {
-		logger.Fatalf("no package found with the name %s, maybe run '%s fetch', and try again?\n", pkg, executable)
+		logger.Fatalf("no package found with the name %s, maybe run 'dyn fetch', and try again?\n", pkg)
 	}
 
 	scriptPath := filepath.Join(targetPkgPath, "DYNPKG")
 	if _, err := os.Stat(scriptPath); os.IsNotExist(err) {
-		logger.Fatalf("no DYNPKG file found for package %s, maybe run '%s fetch', and try again?\n", pkg, executable)
+		logger.Fatalf("no DYNPKG file found for package %s, maybe run 'dyn fetch', and try again?\n", pkg)
 	}
 	scriptBuf, err := os.ReadFile(scriptPath)
 	if err != nil {
@@ -103,33 +98,11 @@ func executePackage(pkg string, act string) {
 	os.RemoveAll(tmpDir)
 }
 
-func verb(s string) string {
-	switch s {
-	case "install":
-		return "installing"
-	case "update":
-		return "updating"
-	case "remove":
-		return "removing"
-	case "fetch":
-		return "fetching"
-	}
-	panic("should never happend")
-}
-
-func arg(n int) (string, bool) {
-	args := os.Args
-	if len(args) <= n {
-		return "", false
-	}
-	return args[n], true
-}
-
-func fetch() {
+func (c CLI) fetch() {
 	logger.Dynf("fetching dyn-pkg git repository.\n")
 
-	os.RemoveAll(pkgPath)
-	_, err := git.PlainClone(pkgPath, false, &git.CloneOptions{
+	os.RemoveAll(c.PkgDir)
+	_, err := git.PlainClone(c.PkgDir, false, &git.CloneOptions{
 		Depth:    1,
 		URL:      "https://github.com/RestartFU/dyn-pkg",
 		Progress: logger.InfoOut,
@@ -138,13 +111,4 @@ func fetch() {
 	if err != nil {
 		logger.Fatalf("error fetching dyn package repository: %s.\n", err)
 	}
-}
-
-func isAnyString(s string, a ...string) bool {
-	for _, str := range a {
-		if str == s {
-			return true
-		}
-	}
-	return false
 }
