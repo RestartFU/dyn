@@ -25,17 +25,19 @@ func Execute() {
 		logger.Fatalf("%s must be run as a super user.\n", executable)
 	}
 
-	act, ok := flag(1)
+	act, ok := arg(1)
 	if !ok || !isAnyString(act, "update", "install", "remove", "fetch") {
 		logger.Fatalf("valid actions: update|install|remove|fetch.\n")
 	}
 
 	if act == "fetch" {
 		fetch()
-		return
+		if !isAnyString(act, "update", "install", "remove") {
+			return
+		}
 	}
 
-	pkg, ok := flag(2)
+	pkg, ok := arg(2)
 	if !ok {
 		logger.Fatalf("please specify the package you wish to %s.\n", act)
 	}
@@ -56,7 +58,7 @@ func Execute() {
 	cmd.Run()
 }
 
-func flag(n int) (string, bool) {
+func arg(n int) (string, bool) {
 	args := os.Args
 	if len(args) <= n {
 		return "", false

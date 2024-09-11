@@ -8,26 +8,43 @@ import (
 )
 
 func Debugf(str string, args ...any) {
-	print("<blue>DEBU</blue>", str, args...)
+	printf("<blue>DEBU</blue>", str, args...)
 }
 
 func Fatalf(str string, args ...any) {
-	print("<red>FATA</red>", str, args...)
+	printf("<red>FATA</red>", str, args...)
+	os.Exit(0)
+}
+
+func Fatal(str string) {
+	print("<red>FATA</red>", str)
 	os.Exit(0)
 }
 
 func Errorf(str string, args ...any) {
-	print("<redstone>ERRO</redstone>", str, args...)
+	printf("<redstone>ERRO</redstone>", str, args...)
+}
+
+func Error(str string) {
+	print("<redstone>ERRO</redstone>", str)
 }
 
 func Infof(str string, args ...any) {
-	print("<yellow>INFO</yellow>", str, args...)
+	printf("<yellow>INFO</yellow>", str, args...)
+}
+
+func Info(str string) {
+	print("<yellow>INFO</yellow>", str)
 }
 
 func Dynf(str string, args ...any) {
-	print("<aqua>DYN </aqua>", str, args...)
+	printf("<aqua>DYN </aqua>", str, args...)
 }
 
-func print(prefix string, str string, args ...any) {
+func printf(prefix string, str string, args ...any) {
 	fmt.Print(text.ANSI(text.Colourf(prefix+"<grey>|</grey> ")) + fmt.Sprintf(str, args...))
+}
+
+func print(prefix string, str string) {
+	fmt.Print(text.ANSI(text.Colourf(prefix+"<grey>|</grey> ")) + str)
 }
