@@ -80,11 +80,9 @@ func executePackage(pkg string, act string) {
 	script := []string{
 		string(scriptBuf),
 		act,
-		"credits=$(echo \"special thanks to ( ${maintainers[*]} ) for maintaining this package\")",
-		"if (( ${#maintainers[@]} != 0 )); then     echo $credits; fi",
+		"if (( ${#maintainers[@]} != 0 )); then credits=$(echo \"special thanks to ( ${maintainers[*]} ) for maintaining this package\"); echo $credits; fi",
 		"echo \"if you too wish to contribute, make sure to check out " + termlink.ColorLink("our github page",
-			"https://github.com/restartfu/dyn", "yellow") + "\"",
-		"echo",
+			"https://github.com/restartfu/dyn", "yellow") + "\" >&1",
 	}
 	tmpScriptPath := filepath.Join(os.TempDir(), "dyn-pkg", pkg, "script.sh")
 	tmpDir := filepath.Dir(tmpScriptPath)
