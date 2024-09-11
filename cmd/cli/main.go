@@ -16,18 +16,18 @@ var (
 func Execute() {
 	exe, err := os.Executable()
 	if err != nil {
-		logger.Fatalf("somehow we cannot know where the executable is being run from: %s", err)
+		logger.Fatalf("somehow we cannot know where the executable is being run from: %s.\n", err)
 	}
 
 	executable := filepath.Base(exe)
 	_, su := os.LookupEnv("SUDO_COMMAND")
 	if !su {
-		logger.Fatalf("%s must be run as a super user.", executable)
+		logger.Fatalf("%s must be run as a super user.\n", executable)
 	}
 
 	act, ok := flag(1)
 	if !ok || !isAnyString(act, "update", "install", "remove", "fetch") {
-		logger.Fatalf("valid actions: update|install|remove|fetch")
+		logger.Fatalf("valid actions: update|install|remove|fetch.\n")
 	}
 
 	if act == "fetch" {
@@ -37,21 +37,21 @@ func Execute() {
 
 	pkg, ok := flag(2)
 	if !ok {
-		logger.Fatalf("please specify the package you wish to %s", act)
+		logger.Fatalf("please specify the package you wish to %s.\n", act)
 	}
 
 	targetPkgPath := filepath.Join(pkgPath, pkg)
 	if _, err := os.Stat(targetPkgPath); os.IsNotExist(err) {
-		logger.Fatalf("no package found with the name %s, maybe run '%s fetch', and try again?", pkg, executable)
+		logger.Fatalf("no package found with the name %s, maybe run '%s fetch', and try again?\n", pkg, executable)
 	}
 
 	scriptPath := filepath.Join(targetPkgPath, act+".sh")
 	if _, err := os.Stat(scriptPath); os.IsNotExist(err) {
-		logger.Fatalf("no %s action found for the package %s, maybe run '%s fetch', and try again?", act, pkg, executable)
+		logger.Fatalf("no %s action found for the package %s, maybe run '%s fetch', and try again?\n", act, pkg, executable)
 	}
 
 	cmd := exec.Command("sh", "-c", scriptPath)
-	cmd.Stdout = os.Stdout
+	cmd.Stdout = logger.InfoOut
 	cmd.Stderr = os.Stderr
 	cmd.Run()
 }
@@ -65,15 +65,17 @@ func flag(n int) (string, bool) {
 }
 
 func fetch() {
+	logger.Dynf("fetching dyn-pkg git repository.\n")
+
 	os.RemoveAll(pkgPath)
 	_, err := git.PlainClone(pkgPath, false, &git.CloneOptions{
 		Depth:    1,
 		URL:      "https://github.com/RestartFU/dyn-pkg",
-		Progress: os.Stdout,
+		Progress: logger.InfoOut,
 	})
 
 	if err != nil {
-		logger.Fatalf("error fetching dyn package repository: %s", err)
+		logger.Fatalf("error fetching dyn package repository: %s.\n", err)
 	}
 }
 
