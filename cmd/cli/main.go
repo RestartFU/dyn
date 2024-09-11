@@ -5,9 +5,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/restartfu/dyn/internal/logger"
+	"github.com/savioxavier/termlink"
 )
 
 var (
@@ -74,12 +76,21 @@ func executePackage(pkg string, act string) {
 	if err != nil {
 		logger.Fatalf("could not read DYNPKG file for package %s", pkg)
 	}
-	script := string(scriptBuf) + "\n" + act
+
+	script := []string{
+		string(scriptBuf),
+		act,
+		"credits=$(echo \"special thanks to ( ${maintainers[*]} ) for maintaining this package\")",
+		"echo $credits",
+		"echo \"if you too wish to contribute, make sure to check out " + termlink.ColorLink("our github page",
+			"https://github.com/restartfu/dyn", "yellow") + "\"",
+		"echo",
+	}
 	tmpScriptPath := filepath.Join(os.TempDir(), "dyn-pkg", pkg, "script.sh")
 	tmpDir := filepath.Dir(tmpScriptPath)
 	os.RemoveAll(tmpDir)
 	os.MkdirAll(tmpDir, os.ModePerm)
-	os.WriteFile(tmpScriptPath, []byte(script), os.ModePerm)
+	os.WriteFile(tmpScriptPath, []byte(strings.Join(script, "\n")), os.ModePerm)
 
 	logger.Dynf("%s package %s.\n", verb(act), pkg)
 	cmd := exec.Command("sh", "-c", tmpScriptPath)
