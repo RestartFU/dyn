@@ -54,13 +54,23 @@ func Execute() {
 		logger.Fatalf("no package found with the name %s, maybe run '%s fetch', and try again?\n", pkg, executable)
 	}
 
-	scriptPath := filepath.Join(targetPkgPath, act+".sh")
+	scriptPath := filepath.Join(targetPkgPath, "DYNPKG")
 	if _, err := os.Stat(scriptPath); os.IsNotExist(err) {
-		logger.Fatalf("no %s action found for the package %s, maybe run '%s fetch', and try again?\n", act, pkg, executable)
+		logger.Fatalf("no DYNPKG file found for package %s, maybe run '%s fetch', and try again?\n", pkg, executable)
 	}
+	scriptBuf, err := os.ReadFile(scriptPath)
+	if err != nil {
+		logger.Fatalf("could not read DYNPKG file for package %s", pkg)
+	}
+	script := string(scriptBuf) + "\n" + act
+	tmpScriptPath := filepath.Join(os.TempDir(), "dyn-pkg", pkg, "script.sh")
+	tmpDir := filepath.Dir(tmpScriptPath)
+	os.RemoveAll(tmpDir)
+	os.MkdirAll(tmpDir, os.ModePerm)
+	os.WriteFile(tmpScriptPath, []byte(script), os.ModePerm)
 
 	logger.Dynf("%s package %s.\n", verb(act), pkg)
-	cmd := exec.Command("sh", "-c", scriptPath)
+	cmd := exec.Command("sh", "-c", tmpScriptPath)
 	cmd.Stdout = logger.InfoOut
 	cmd.Stderr = os.Stderr
 	cmd.Run()
