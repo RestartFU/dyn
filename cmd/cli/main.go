@@ -42,7 +42,11 @@ func Execute() {
 
 	pkg, ok := arg(pkgArgN)
 	if !ok {
-		logger.Fatalf("please specify the package you wish to %s.\n", act)
+		if act != "update" {
+			logger.Fatalf("please specify the package you wish to %s.\n", act)
+		}
+		act = "update"
+		pkg = "dyn"
 	}
 
 	targetPkgPath := filepath.Join(pkgPath, pkg)
