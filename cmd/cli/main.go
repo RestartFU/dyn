@@ -81,7 +81,7 @@ func executePackage(pkg string, act string) {
 		string(scriptBuf),
 		act,
 		"credits=$(echo \"special thanks to ( ${maintainers[*]} ) for maintaining this package\")",
-		"echo $credits",
+		"if (( ${#maintainers[@]} != 0 )); then     echo $credits; fi",
 		"echo \"if you too wish to contribute, make sure to check out " + termlink.ColorLink("our github page",
 			"https://github.com/restartfu/dyn", "yellow") + "\"",
 		"echo",
