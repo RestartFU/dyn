@@ -54,6 +54,8 @@ func (c CLI) Execute() {
 	}
 
 	c.executePackage(pkg, act)
+	logger.Dynf("if you wish to contribute, make sure to check out %s\n",
+		termlink.ColorLink("our github page", "https://github.com/restartfu/dyn", "yellow"))
 	logger.Dynf("done %s package %s.\n", verb(act), pkg)
 }
 
@@ -79,9 +81,6 @@ func (c CLI) executePackage(pkg string, act string) {
 			credits=$(echo "special thanks to ( $maintainers ) for maintaining this package")
 			echo $credits;
 		 fi`,
-
-		"echo \"if you wish to contribute, make sure to check out " + termlink.ColorLink("our github page",
-			"https://github.com/restartfu/dyn", "yellow") + "\" >&1",
 	}
 	tmpScriptPath := filepath.Join(os.TempDir(), "dyn-pkg", pkg, "script.sh")
 	tmpDir := filepath.Dir(tmpScriptPath)
