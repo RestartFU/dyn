@@ -33,7 +33,8 @@ func Execute() {
 	pkgArgN := 2
 	if act == "fetch" {
 		fetch()
-		if !isAnyString(act, "update", "install", "remove") {
+		act, ok = arg(pkgArgN)
+		if !ok || !isAnyString(act, "update", "install", "remove") {
 			return
 		}
 		pkgArgN = 3
@@ -54,10 +55,27 @@ func Execute() {
 		logger.Fatalf("no %s action found for the package %s, maybe run '%s fetch', and try again?\n", act, pkg, executable)
 	}
 
+	logger.Dynf("%s package %s.\n", verb(act), pkg)
 	cmd := exec.Command("sh", "-c", scriptPath)
 	cmd.Stdout = logger.InfoOut
 	cmd.Stderr = os.Stderr
 	cmd.Run()
+
+	logger.Dynf("done %s package %s.\n", verb(act), pkg)
+}
+
+func verb(s string) string {
+	switch s {
+	case "install":
+		return "installing"
+	case "update":
+		return "updating"
+	case "remove":
+		return "removing"
+	case "fetch":
+		return "fetching"
+	}
+	panic("should never happend")
 }
 
 func arg(n int) (string, bool) {
