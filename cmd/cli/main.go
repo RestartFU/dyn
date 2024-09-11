@@ -13,7 +13,7 @@ var (
 	pkgPath = "/usr/local/dyn-pkg"
 )
 
-func Execute(args []string) {
+func Execute() {
 	exe, err := os.Executable()
 	if err != nil {
 		logger.Fatalf("somehow we cannot know where the executable is being run from: %s", err)
