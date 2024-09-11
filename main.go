@@ -10,7 +10,7 @@ import (
 var version = logger.Color("<aqua>v0.1.4</aqua>")
 
 func main() {
-	nosudo := flag.Bool("nosudo", false, "a bool")
+	nosudo := flag.Bool("nosudo", false, "")
 	pkgDir := flag.String("pkgdir", "/usr/local/dyn-pkg", "")
 	flag.Parse()
 
