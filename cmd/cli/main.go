@@ -30,14 +30,16 @@ func Execute() {
 		logger.Fatalf("valid actions: update|install|remove|fetch.\n")
 	}
 
+	pkgArgN := 2
 	if act == "fetch" {
 		fetch()
 		if !isAnyString(act, "update", "install", "remove") {
 			return
 		}
+		pkgArgN = 3
 	}
 
-	pkg, ok := arg(2)
+	pkg, ok := arg(pkgArgN)
 	if !ok {
 		logger.Fatalf("please specify the package you wish to %s.\n", act)
 	}
