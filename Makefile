@@ -1,5 +1,5 @@
 install:
-	go build .
+	v .
 	mv dyn /usr/bin/dyn
 push:
 	git add .
