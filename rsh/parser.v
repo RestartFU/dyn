@@ -17,12 +17,9 @@ fn (mut p Parser) expect(kind TokenKind) Token {
 	}
 	if tok.kind == tok_string {
 		for id, v in p.result.variables {
-			println(tok.text)
 			tok.text = tok.text.replace("$" + "{" + id + "}", v)
-			println(tok.text)
 		}
 	}
-
 	return tok
 }
 
@@ -36,6 +33,13 @@ fn (mut p Parser) parse_function() {
 	for tok.kind != tok_right_bracket {
 		line := tok.line
 		match tok.text {
+			"unzip" {
+				from := p.expect(tok_string).text
+				p.expect(tok_to)
+				to := p.expect(tok_string).text
+
+				p.result.functions[identifier].actions << fn [from, to] () { unzip(from, to) }
+			}
 			"download" {
 				url := p.expect(tok_string).text
 				p.expect(tok_to)
@@ -46,6 +50,13 @@ fn (mut p Parser) parse_function() {
 			"sh" {
 				s := p.expect(tok_string).text
 				p.result.functions[identifier].actions << fn[s] () { sh(s) }
+			}
+			"link" {
+				from := p.expect(tok_string).text
+				p.expect(tok_to)
+				to := p.expect(tok_string).text
+
+				p.result.functions[identifier].actions << fn [from, to] () { link(from, to) }
 			}
 			"internal" {
 				res := &p.result
@@ -67,6 +78,11 @@ fn (mut p Parser) parse_function() {
 		}
 		tok = p.tokenizer.token()
 	}
+}
+
+fn (mut p Parser) parse_require() {
+	value := p.expect(tok_identifier).text
+	p.result.requires << value
 }
 
 fn (mut p Parser) parse_variable() {
@@ -94,6 +110,9 @@ pub fn parse_script(filename string) Script {
 			}
 			tok_function {
 				parser.parse_function()
+			}
+			tok_require {
+				parser.parse_require()
 			}
 			else {}
 		}

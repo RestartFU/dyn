@@ -13,4 +13,5 @@ const (
 
 	tok_left_bracket = TokenKind{identifier: "left bracket"}
 	tok_right_bracket = TokenKind{identifier: "right bracket"}
+	tok_require = TokenKind{identifier: "require"}
 )

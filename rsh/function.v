@@ -2,6 +2,8 @@ module rsh
 
 import os
 import net.http
+import compress.gzip
+import compress.szip
 
 struct Function {
 mut:
@@ -24,6 +26,16 @@ fn (p Parser) internal(line int, cursor int, s string, res &Script) {
 	}
 	for act in fnc.actions {
 		act()
+	}
+}
+
+fn link(input string, output string) {
+	sh("ln -s $(realpath ${input}) $output")
+}
+
+fn unzip(input string, output string) {
+	szip.extract_zip_to_dir(input, output) or {
+		exit(0)
 	}
 }
 

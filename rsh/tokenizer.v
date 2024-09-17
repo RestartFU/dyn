@@ -169,6 +169,9 @@ fn (mut t Tokenizer) token() Token {
 					"function" {
 						tok.kind = tok_function
 					}
+					"require" {
+						tok.kind = tok_require
+					}
 					else {
 						should_break = false
 					}
