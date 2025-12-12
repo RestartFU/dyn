@@ -5,13 +5,14 @@ Welcome to Dyn, a modern, user-friendly package manager for Linux that's designe
 ## Installation
 
 ### Prerequisites
-- Ensure you have **Go** installed on your system.
+- Ensure you have **Rust** (cargo) installed on your system.
 
 ### From Source
 ```sh
 git clone --depth=1 https://github.com/RestartFU/dyn
 cd dyn
-sudo make install
+cargo build --release
+sudo cp target/release/dyn /usr/bin/dyn
 ```
 
 ### From Releases
